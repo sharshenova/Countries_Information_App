@@ -40,7 +40,6 @@ class Countries extends Component {
 		console.log(this.state.selectedCountryAlpha)
 	}	
 
-
 	render () {
 
 		let instruction = null;
@@ -53,23 +52,35 @@ class Countries extends Component {
 			);
 		}
 
-		return (
-			<Fragment>
-				<section className="Countries">
-					{this.state.countries.map(country => (
-						<Country 
-							key={country.alpha3Code}
-							name={country.name}
-							clicked={() => this.countrySelected(country.alpha3Code)}
-						/>
-					))}
-				</section>
-				<section className="CountryInfo">		
-					{instruction}
+		let countryInfoBlock = null;
+
+		if (this.state.selectedCountryAlpha) {
+			countryInfoBlock = (
+				<section className="CountryInfoBlock">
 					<CountryInfo
 						alpha={this.state.selectedCountryAlpha}
 					/>
 				</section>
+			);
+		}
+
+		return (
+			<Fragment>
+				<div className="container row mt-60">
+					<section className="CountryList col col-4 border border-dark rounded">
+						{this.state.countries.map(country => (
+							<Country
+								key={country.alpha3Code}
+								name={country.name}
+								clicked={() => this.countrySelected(country.alpha3Code)}
+							/>
+						))}
+					</section>
+					<section className="CountryDetails col col-7 border border-dark rounded">		
+						{instruction}
+						{countryInfoBlock}
+					</section>
+				</div>
 			</Fragment>	
 		);
 	}
