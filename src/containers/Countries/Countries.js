@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import Country from "../../components/Country/Country";
+import CountryInfo from "../../components/CountryInfo/CountryInfo";
 import axios from 'axios';
 
 
@@ -9,12 +10,14 @@ class Countries extends Component {
 		super(props);
 		this.state = {};
 		this.state.countries = [];
+		this.state.selectedCountryAlpha = null
 	}
 
 	componentDidMount () {
-		let baseURL = 'https://restcountries.eu/rest/v2/';
-		let countriesURL = 'all?fields=name;alpha3Code';
-		let alphaURL = 'alpha/';
+		const baseURL = 'https://restcountries.eu/rest/v2/';
+		const countriesURL = 'all?fields=name;alpha3Code';
+		const alphaURL = 'alpha/';
+
 		axios.get(baseURL + countriesURL).then(response => {
 			const requests = response.data.map(country => {
 				return axios.get(baseURL + alphaURL + country.alpha3Code).then(response => {
@@ -29,20 +32,45 @@ class Countries extends Component {
 		});
 	}
 
+	countrySelected = (alpha) => {
+		this.setState({
+			...this.state,
+			selectedCountryAlpha: alpha
+		});
+		console.log(this.state.selectedCountryAlpha)
+	}	
+
 
 	render () {
 
+		let instruction = null;
 
+		if (!this.state.selectedCountryAlpha) {
+			instruction = (
+				<section className="Instruction">
+					<p>Please choose the country</p>
+				</section>
+			);
+		}
 
 		return (
 			<Fragment>
 				<section className="Countries">
 					{this.state.countries.map(country => (
-						<Country key={country.alpha3Code} name={country.name}/>
+						<Country 
+							key={country.alpha3Code}
+							name={country.name}
+							clicked={() => this.countrySelected(country.alpha3Code)}
+						/>
 					))}
 				</section>
-			</Fragment>
-		
+				<section className="CountryInfo">		
+					{instruction}
+					<CountryInfo
+						alpha={this.state.selectedCountryAlpha}
+					/>
+				</section>
+			</Fragment>	
 		);
 	}
 }
