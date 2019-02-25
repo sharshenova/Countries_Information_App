@@ -42,28 +42,6 @@ class Countries extends Component {
 
 	render () {
 
-		let instruction = null;
-
-		if (!this.state.selectedCountryAlpha) {
-			instruction = (
-				<section className="Instruction">
-					<p>Please choose the country</p>
-				</section>
-			);
-		}
-
-		let countryInfoBlock = null;
-
-		if (this.state.selectedCountryAlpha) {
-			countryInfoBlock = (
-				<section className="CountryInfoBlock">
-					<CountryInfo
-						alpha={this.state.selectedCountryAlpha}
-					/>
-				</section>
-			);
-		}
-
 		return (
 			<Fragment>
 				<div className="container row mt-60">
@@ -77,8 +55,9 @@ class Countries extends Component {
 						))}
 					</section>
 					<section className="CountryDetails col col-7 border border-dark rounded">		
-						{instruction}
-						{countryInfoBlock}
+					<CountryInfo
+						alpha={this.state.selectedCountryAlpha}
+					/>
 					</section>
 				</div>
 			</Fragment>	
