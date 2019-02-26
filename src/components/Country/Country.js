@@ -6,6 +6,6 @@ function Country (props) {
 			<div onClick={props.clicked}>{props.name}</div>
 		</div>
 	)
-}
+};
 
 export default Country;

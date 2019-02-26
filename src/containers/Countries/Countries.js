@@ -13,31 +13,42 @@ class Countries extends Component {
 		this.state.selectedCountryAlpha = null
 	}
 
+	// выводим список стран при загрузке страницы
 	componentDidMount () {
+		// объявлем в качестве констант разные части URL-ов 
+		// для составления API-адресов для получения данных
 		const baseURL = 'https://restcountries.eu/rest/v2/';
 		const countriesURL = 'all?fields=name;alpha3Code';
 		const alphaURL = 'alpha/';
 
+		// строим axios-запрос для вывода данных: 
+		// получаем список всех стран с alpha3-кодами,
+		// проходим по каждой стране из списка с помощью "map" (по alpha3-коду)
+		// и возвращаем информацию: код и название страны
+		// чтобы все страны успели подгрузиться, используем Promise.all,
+		// который сохраняет данные только после того, как все запросы пройдут
 		axios.get(baseURL + countriesURL).then(response => {
 			const requests = response.data.map(country => {
 				return axios.get(baseURL + alphaURL + country.alpha3Code).then(response => {
-					return {...country, borders: response.data.borders};
+					return {...country};
 				});
 			});
 			return Promise.all(requests);
 		}).then(countries =>
 			this.setState({countries})
 		).catch(error => {
-			console.log(error);
+			console.log(error, 'error');
 		});
+		console.log(this.state.countries, 'didMount')
 	}
 
+	// передаем в стейт alpha3-код страны, по которой кликнул пользователь
 	countrySelected = (alpha) => {
 		this.setState({
 			...this.state,
 			selectedCountryAlpha: alpha
 		});
-		console.log(this.state.selectedCountryAlpha)
+		console.log(this.state.selectedCountryAlpha, 'countrySelected')
 	}	
 
 	render () {

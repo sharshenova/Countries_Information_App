@@ -11,12 +11,18 @@ class CountryInfo extends Component {
 		this.state.borderNames = []
 	}
 
+	// выводим информацию о стране при получении нового alpha3-кода
+	// находим поле borders, содержащее alpha3-коды пограничных стран
+	// по каждому из этих кодов делаем запрос на получение данных об этой стране,
+	// оттуда возвращаем имя каждой пограничной страны.
+	// чтобы все имена пограничных стран успели подгрузиться, используем Promise.all
+	// возвращаем response.data (данные о нужной стране) из внешнего запроса response
+	// и [...border] - имена пограничных стран из requests
 	componentDidUpdate() {
 		const loadedCountry = this.state.loadedCountry;
 		const newAlpha = this.props.alpha;
 		const baseURL = 'https://restcountries.eu/rest/v2/';
 		const alphaURL = 'alpha/';
-		console.log(this.state, 'qwe')
 
 		if (newAlpha) {
 			if (!loadedCountry || newAlpha !== loadedCountry.alpha3Code) {
@@ -28,7 +34,7 @@ class CountryInfo extends Component {
 						});
 					});
 					
-					console.log(requests, 'REQ')
+					console.log(requests, 'requests')
 					
 					return Promise.all(requests).then(border =>
 					this.setState({
@@ -36,10 +42,11 @@ class CountryInfo extends Component {
 						borderNames: [...border]
 					}))
 				}).catch(error => {
-					console.log(error)
+					console.log(error, 'error')
 				});
 			}
 		}
+		console.log(this.state, 'didUpdate')
 	}
 
 	render() {
